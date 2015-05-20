@@ -1,0 +1,287 @@
+/*
+ * The Kuali Financial System, a comprehensive financial management system for higher education.
+ *
+ * Copyright 2005-2014 The Kuali Foundation
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.kuali.kfs.module.ar.businessobject;
+
+import java.sql.Date;
+import java.util.LinkedHashMap;
+
+import org.kuali.kfs.integration.cg.ContractsAndGrantsBillingAward;
+import org.kuali.kfs.sys.KFSPropertyConstants;
+import org.kuali.rice.core.api.util.type.KualiDecimal;
+import org.kuali.rice.krad.bo.TransientBusinessObjectBase;
+
+/**
+ * Defines an entry in the Contracts & Grants Invoice Payment History Report.
+ */
+public class ContractsGrantsPaymentHistoryReport extends TransientBusinessObjectBase {
+
+    private String paymentNumber;
+    private Date paymentDate;
+    private String customerNumber;
+    private String customerName;
+    private KualiDecimal paymentAmount;
+    private String invoiceNumber;
+    private KualiDecimal invoiceAmount;
+    private Long awardNumber;
+    private boolean reversedIndicator;
+    private boolean appliedIndicator;
+    private Customer customer;
+    private ContractsAndGrantsBillingAward award;
+
+
+    protected LinkedHashMap toStringMapper_RICE20_REFACTORME() {
+        LinkedHashMap<String, String> m = new LinkedHashMap<String, String>();
+
+        if (this.paymentDate != null) {
+            m.put("paymentDate", this.paymentDate.toString());
+        }
+        if (this.paymentAmount != null) {
+            m.put("paymentAmount", this.paymentAmount.toString());
+        }
+        if (this.invoiceAmount != null) {
+            m.put("invoiceAmount", this.invoiceAmount.toString());
+        }
+
+        m.put("paymentNumber", this.paymentNumber);
+        m.put(KFSPropertyConstants.CUSTOMER_NUMBER, this.customerNumber);
+        m.put("customerName", this.customerName);
+        m.put("invoiceNumber", this.invoiceNumber);
+
+        return m;
+    }
+
+    /**
+     * Gets the paymentNumber attribute.
+     *
+     * @return Returns the paymentNumber
+     */
+    public String getPaymentNumber() {
+        return paymentNumber;
+    }
+
+    /**
+     * Sets the paymentNumber attribute value.
+     *
+     * @param paymentNumber The paymentNumber to set.
+     */
+    public void setPaymentNumber(String paymentNumber) {
+        this.paymentNumber = paymentNumber;
+    }
+
+    /**
+     * Gets the paymentDate attribute.
+     *
+     * @return Returns the paymentDate
+     */
+    public Date getPaymentDate() {
+        return paymentDate;
+    }
+
+    /**
+     * Sets the paymentDate attribute value.
+     *
+     * @param paymentDate The paymentDate to set.
+     */
+    public void setPaymentDate(Date paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    /**
+     * Gets the customerNumber attribute.
+     *
+     * @return Returns the customerNumber
+     */
+    public String getCustomerNumber() {
+        return customerNumber;
+    }
+
+    /**
+     * Sets the customerNumber attribute value.
+     *
+     * @param customerNumber The customerNumber to set.
+     */
+    public void setCustomerNumber(String customerNumber) {
+        this.customerNumber = customerNumber;
+    }
+
+    /**
+     * Gets the customerName attribute.
+     *
+     * @return Returns the customerName
+     */
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    /**
+     * Sets the customerName attribute value.
+     *
+     * @param customerName The customerName to set.
+     */
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    /**
+     * Gets the paymentAmount attribute.
+     *
+     * @return Returns the paymentAmount
+     */
+    public KualiDecimal getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    /**
+     * Sets the paymentAmount attribute value.
+     *
+     * @param paymentAmount The paymentAmount to set.
+     */
+    public void setPaymentAmount(KualiDecimal paymentAmount) {
+        this.paymentAmount = paymentAmount;
+    }
+
+    /**
+     * Gets the invoiceNumber attribute.
+     *
+     * @return Returns the invoiceNumber
+     */
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    /**
+     * Sets the invoiceNumber attribute value.
+     *
+     * @param invoiceNumber The invoiceNumber to set.
+     */
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    /**
+     * Gets the invoiceAmount attribute.
+     *
+     * @return Returns the invoiceAmount
+     */
+    public KualiDecimal getInvoiceAmount() {
+        return invoiceAmount;
+    }
+
+    /**
+     * Sets the invoiceAmount attribute value.
+     *
+     * @param invoiceAmount The invoiceAmount to set.
+     */
+    public void setInvoiceAmount(KualiDecimal invoiceAmount) {
+        this.invoiceAmount = invoiceAmount;
+    }
+
+
+
+    /**
+     * Gets the awardNumber attribute.
+     *
+     * @return Returns the awardNumber
+     */
+
+    public Long getAwardNumber() {
+        return awardNumber;
+    }
+
+    /**
+     * Sets the awardNumber attribute.
+     *
+     * @param awardNumber The awardNumber to set.
+     */
+    public void setAwardNumber(Long awardNumber) {
+        this.awardNumber = awardNumber;
+    }
+
+    /**
+     * Gets the reversedIndicator attribute.
+     * @return the reversedIndicator
+     */
+    public boolean isReversedIndicator() {
+        return reversedIndicator;
+    }
+
+    /**
+     * Sets the reversedIndicator attribute value.
+     * @param reversedIndicator the reversedIndicator to set
+     */
+    public void setReversedIndicator(boolean reversedIndicator) {
+        this.reversedIndicator = reversedIndicator;
+    }
+
+    /**
+     * Gets the appliedIndicator attribute.
+     * @return the appliedIndicator
+     */
+    public boolean isAppliedIndicator() {
+        return appliedIndicator;
+    }
+
+    /**
+     * Sets the appliedIndicator attribute value.
+     * @param appliedIndicator the appliedIndicator to set
+     */
+    public void setAppliedIndicator(boolean appliedIndicator) {
+        this.appliedIndicator = appliedIndicator;
+    }
+
+    /**
+     * Gets the customer attribute.
+     *
+     * @return Returns the customer
+     */
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    /**
+     * Sets the customer attribute.
+     *
+     * @param customer The customer to set.
+     */
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    /**
+     * Gets the award attribute.
+     *
+     * @return Returns the award
+     */
+
+    public ContractsAndGrantsBillingAward getAward() {
+        return award;
+    }
+
+    /**
+     * Sets the award attribute.
+     *
+     * @param award The award to set.
+     */
+    public void setAward(ContractsAndGrantsBillingAward award) {
+        this.award = award;
+    }
+
+
+}
