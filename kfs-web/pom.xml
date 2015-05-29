@@ -130,10 +130,7 @@
                         </goals>
                         <configuration>
                             <pushImage>${push.docker.image}</pushImage>
-                            <!--
                             <imageName>uaksd/kuali-applications:kfs-docker-${project.version}-build${build.number}</imageName>
-                            -->
-                            <imageName>uaksd/kuali-applications:kfs-mysql-demo-db</imageName>
                             <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
                             <skipDockerBuild>${skip.docker.build}</skipDockerBuild>
                             <resources>
