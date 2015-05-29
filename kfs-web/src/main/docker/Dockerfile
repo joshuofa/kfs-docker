@@ -1,30 +1,23 @@
-FROM centos
+FROM uaksd/kuali-applications:kuali-docker-base-0.1
 
-# Install mysql 5.5 minimal server 
-RUN rpmkeys --import http://repo.mysql.com/RPM-GPG-KEY-mysql \
-  && yum install -y http://repo.mysql.com/yum/mysql-5.5-community/docker/x86_64/mysql-community-server-minimal-5.5.42-2.el7.x86_64.rpm \
-  && rm -rf /var/cache/yum/* \
-  && mkdir -p /etc/mysql
+MAINTAINER rbtucker@email.arizona.edu
 
-# setup mysql init script
-RUN touch /tmp/mysql-init.sql \
-  && echo "SET @@SESSION.SQL_LOG_BIN=0;" >> /tmp/mysql-init.sql \
-  && echo "DELETE FROM mysql.user ;"  >> /tmp/mysql-init.sql \
-  && echo "CREATE USER 'root'@'%' IDENTIFIED BY 'kuali' ;"  >> /tmp/mysql-init.sql \
-  && echo "GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION ;"  >> /tmp/mysql-init.sql \
-  && echo "CREATE DATABASE kfs;" >> /tmp/mysql-init.sql \
-  && echo "CREATE USER 'kuldev'@'%' IDENTIFIED BY 'kuldev';" >> /tmp/mysql-init.sql \
-  && echo "GRANT ALL PRIVILEGES ON kfs.* TO 'kuldev'@'%';" >> /tmp/mysql-init.sql \
-  && echo 'FLUSH PRIVILEGES;' >> /tmp/mysql-init.sql
+# copy in the kfs build and utility scripts
+COPY kfs-build /var/opt/kuali/tomcat/latest-tomcat/webapps
+COPY scripts /
 
+# set kfs web app directory owner and group
+RUN chmod +x /usr/local/bin/* \
+    && chown -R kualiadm:kuali /var/opt/kuali/tomcat/latest-tomcat/webapps/kfs
 
-COPY mysql-start.sh /mysql-start.sh 
-COPY my.cnf /etc/mysql/my.cnf
- 
-# create database
-RUN  /usr/bin/mysql_install_db --force --skip-name-resolve \
-    && chmod +x /mysql-start.sh
+# create some useful shorcut environment variables
+ENV TOMCAT_KFS_DIR=/var/opt/kuali/tomcat/latest-tomcat/webapps/kfs
+ENV TOMCAT_KFS_WEBINF_DIR=/var/opt/kuali/tomcat/latest-tomcat/webapps/kfs/WEB-INF
+ENV TRANSACTIONAL_DIRECTORY=/transactional
+ENV CONFIG_DIRECTORY=/configuration
+ENV LOGS_DIRECTORY=/logs
+ENV SECURITY_DIRECTORY=/security
+ENV TOMCAT_CONFIG_DIRECTORY=/configuration/tomcat-config
+ENV KFS_CONFIG_DIRECTORY=/configuration/kfs-config
 
-EXPOSE 3306
-
-ENTRYPOINT ["/mysql-start.sh"]
+ENTRYPOINT /usr/local/bin/tomcat-start
