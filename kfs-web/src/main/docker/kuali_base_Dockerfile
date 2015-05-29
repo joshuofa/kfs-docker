@@ -1,0 +1,33 @@
+FROM centos
+
+MAINTAINER rbtucker@email.arizona.edu
+
+# update os
+RUN yum -y update 
+
+# install utilities/apps we need
+RUN yum -y install wget tar
+
+# setup kuali security users/groups
+RUN groupadd kuali && \
+	useradd -g kuali kualiadm 
+
+# install java 8
+RUN cd /opt/ && \
+    wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jdk-8u45-linux-x64.tar.gz" && \
+    tar xzf jdk-8u45-linux-x64.tar.gz && \
+    rm jdk-8u45-linux-x64.tar.gz
+
+# create tomcat install directory
+RUN mkdir -p /var/opt/kuali/tomcat
+
+# install tomcat 7
+RUN cd /var/opt/kuali/tomcat && \
+    wget http://mirrors.ibiblio.org/apache/tomcat/tomcat-7/v7.0.62/bin/apache-tomcat-7.0.62.tar.gz && \
+    tar xzf apache-tomcat-7.0.62.tar.gz && \
+    rm apache-tomcat-7.0.62.tar.gz && \
+    ln -s /var/opt/kuali/tomcat/apache-tomcat-7.0.62 /var/opt/kuali/tomcat/latest-tomcat && \
+    chown -R kualiadm:kuali /var/opt/kuali
+
+
+

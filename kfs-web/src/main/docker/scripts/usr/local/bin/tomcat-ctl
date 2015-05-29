@@ -1,0 +1,104 @@
+#!/bin/bash
+
+check_process () {
+    PROCPIDS=`pgrep -u kualiadm -f "$1"`
+    if [ "X$PROCPIDS" = "X" ]
+    then
+        return 1;
+    else
+        return 0;
+    fi
+}
+
+tomcat_start () {
+    if check_process
+    then
+        echo "Tomcat application server tomcat is already running." >> $LOGS_DIRECTORY/kfs-startup.log
+    else
+        # make logs directory and kfs-startup.log if they do not exists
+        if [ ! -f $LOGS_DIRECTORY/kfs-startup.log ] 
+        then
+            mkdir -p $LOGS_DIRECTORY
+            echo "Creating logs directory." >> $LOGS_DIRECTORY/kfs-startup.log
+            touch $LOGS_DIRECTORY/kfs-startup.log
+            chown -R kualiadm:kuali $LOGS_DIRECTORY
+        fi
+
+        chmod -R 777  $LOGS_DIRECTORY
+
+        echo "Starting Tomcat application server tomcat ..." >> $LOGS_DIRECTORY/kfs-startup.log
+
+        
+        # copy in tomcat configuration files
+        cp $TOMCAT_CONFIG_DIRECTORY/server.xml /var/opt/kuali/tomcat/latest-tomcat/conf
+        cp $SECURITY_DIRECTORY/tomcat-users.xml /var/opt/kuali/tomcat/latest-tomcat/conf
+        cp $TOMCAT_CONFIG_DIRECTORY/logging.properties /var/opt/kuali/tomcat/latest-tomcat/conf
+        cp $TOMCAT_CONFIG_DIRECTORY/setenv.sh /var/opt/kuali/tomcat/latest-tomcat/bin
+        cp $TOMCAT_CONFIG_DIRECTORY/log4j.properties $TOMCAT_KFS_WEBINF_DIR/classes
+
+        chown -R kualiadm:kuali $TOMCAT_CONFIG_DIRECTORY
+        chown kualidm:kuali /var/opt/kuali/tomcat/latest-tomcat/bin/setenv.sh
+        chmod +x /var/opt/kuali/tomcat/latest-tomcat/bin/setenv.sh
+
+        /var/opt/kuali/tomcat/latest-tomcat/bin/startup.sh >> $LOGS_DIRECTORY/kfs-startup.log
+        
+        # tail the startup log to keep tomcat running
+        tail -f $LOGS_DIRECTORY/kfs-startup.log
+    fi
+
+    return;
+}
+
+tomcat_stop() {
+    if check_process
+    then
+        echo "Stopping Tomcat application server tomcat ..."
+
+        /var/opt/kuali/tomcat/latest-tomcat/bin/shutdown.sh -force
+
+        sleep 3
+        if check_process
+        then
+            PIDS=`pgrep -f -d' ' `
+            echo "Unable to stop Tomcat application server tomcat: running PIDS are '$PIDS'." >> $LOGS_DIRECTORY/kfs-startup.log
+        else
+            echo "Tomcat application server tomcat stopped." >> $LOGS_DIRECTORY/kfs-startup.log
+        fi
+    else
+        echo "Tomcat application server tomcat is already stopped." >> $LOGS_DIRECTORY/kfs-startup.log
+    fi
+
+    return;
+}
+
+tomcat_status () {
+    if check_process
+    then
+        PIDS=`pgrep -f -d' ' `
+        echo "Tomcat application server tomcat is running: PIDS are '$PIDS'." >> $LOGS_DIRECTORY/kfs-startup.log
+    else
+        echo "Tomcat application server tomcat is stopped." >> $LOGS_DIRECTORY/kfs-startup.log
+    fi
+
+    return;
+}
+
+case "$1" in
+    'start')
+           tomcat_start
+           ;;
+    'stop')
+           tomcat_stop
+           ;;
+    'restart')
+           tomcat_stop
+           tomcat_start
+           ;;
+    'status')
+           tomcat_status
+           ;;
+    *)
+        echo "Invalid input parameter: $1." >> $LOGS_DIRECTORY/kfs-startup.log
+        exit 1
+           ;;
+esac
